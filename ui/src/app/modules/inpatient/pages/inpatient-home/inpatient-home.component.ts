@@ -28,6 +28,7 @@ import {
   getAllAdmittedPatientVisits,
   getVisitLoadingState,
 } from "src/app/store/selectors/visit.selectors";
+import {AdmissionStatus} from "../../../../shared/components/patient-list/patient-list.component";
 
 @Component({
   selector: "app-inpatient-home",
@@ -130,4 +131,6 @@ export class InpatientHomeComponent implements OnInit {
       panelClass: "custom-dialog-container",
     });
   }
+
+    protected readonly AdmissionStatus = AdmissionStatus;
 }

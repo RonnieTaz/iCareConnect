@@ -27,6 +27,12 @@ import { MatDialog } from "@angular/material/dialog";
 import { addCurrentPatient, go } from "src/app/store/actions";
 import { SystemSettingsService } from "src/app/core/services/system-settings.service";
 
+export enum AdmissionStatus {
+  ADMITTED,
+  DISCHARGED,
+  ALL
+}
+
 @Component({
   selector: "app-patient-list",
   templateUrl: "./patient-list.component.html",
@@ -49,6 +55,7 @@ export class PatientListComponent implements OnInit, OnChanges {
   @Input() orderByDirection: string;
   @Input() doNotUseLocation: boolean;
   @Input() encounterType: string;
+  @Input() admissionState: AdmissionStatus
 
   page: number = 0;
   visits$: Observable<Visit[]>;
@@ -57,6 +64,7 @@ export class PatientListComponent implements OnInit, OnChanges {
   loadingPatients: boolean;
   locationsUuids: string[] = [];
   paymentTypeSelected: string;
+  readonly AdmissionStatus = AdmissionStatus;
 
   filters$: Observable<any[]>;
 
@@ -94,10 +102,10 @@ export class PatientListComponent implements OnInit, OnChanges {
       this.paymentTypeSelected = this.defaultFilter;
     }
     this.itemsPerPage = this.itemsPerPage ? this.itemsPerPage : 10;
-    this.getVisits(this.visits);
+    this.getVisits(this.visits, this.admissionState ?? AdmissionStatus.ALL);
   }
 
-  private getVisits(visits: Visit[]) {
+  private getVisits(visits: Visit[], admission: AdmissionStatus) {
     this.loadingPatients = true;
     this.visits$ = visits
       ? of(visits)
@@ -131,6 +139,13 @@ export class PatientListComponent implements OnInit, OnChanges {
               }
             })
           );
+    if (admission === AdmissionStatus.ADMITTED) {
+      this.filteredVisits$ = this.visits$.pipe(map(visits => visits.filter(visits => visits.visit.stopDatetime === null || new Date(visits.visit.stopDatetime) > new Date())))
+    } else if (admission === AdmissionStatus.DISCHARGED) {
+      this.filteredVisits$ = this.visits$.pipe(map(visits => visits.filter(visits => !(visits.visit.stopDatetime === null || new Date(visits.visit.stopDatetime) > new Date()))))
+    } else {
+      this.filteredVisits$ = this.visits$
+    }
   }
 
   getAnotherList(event: Event, visit, type): void {
@@ -241,7 +256,7 @@ export class PatientListComponent implements OnInit, OnChanges {
   togglePatientTypeList(type) {
     const currentUrl = this.router.url.split("?")[0];
     const params = this.router.url.split("?")[1];
-    this.isTabularList = type === "tabular" ? true : false;
+    this.isTabularList = type === "tabular";
     this.store.dispatch(
       go({ path: [currentUrl], query: { queryParams: { list: type } } })
     );

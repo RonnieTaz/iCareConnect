@@ -152,6 +152,8 @@ export class LedgerFormComponent implements OnInit {
       remarks: formValues?.remarks?.value,
     };
 
+    console.log(ledgerInput);
+
     this.dialogRef.close({ ledgerInput });
   }
 }
