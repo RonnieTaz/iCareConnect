@@ -18,6 +18,7 @@
   ></mat-progress-bar>
   <div *ngIf="params?.bedsByLocationDetails && params?.locationsIds">
     <mat-tab-group mat-align-tabs="start" dynamicHeight="true">
+      
       <mat-tab label="Admitted Patients">
         <mat-toolbar>
           <button
@@ -52,6 +53,7 @@
           </div>
         </div>
       </mat-tab>
+
       <mat-tab label="Beds">
         <mat-toolbar>
           <button
@@ -60,9 +62,7 @@
             matTooltip="Go to Home page"
           >
             <mat-icon>arrow_back</mat-icon>
-            <span class="ml-2" style="font-size: 1.2rem"
-              >Beds list & status</span
-            >
+            <span class="ml-2" style="font-size: 1.2rem">Beds list & status</span>
           </button>
         </mat-toolbar>
         <app-wards-list
@@ -71,8 +71,10 @@
           [encounterType]="'e22e39fd-7db2-45e7-80f1-60fa0d5a4378'"
           [currentLocation]="currentLocation"
           (bedStatus)="onGetBedStatus($event, params?.orderType)"
-        ></app-wards-list>
+        >
+        </app-wards-list>
       </mat-tab>
+
         <mat-tab label="Discharged Patients">
             <mat-toolbar>
                 <button
@@ -81,8 +83,9 @@
                         matTooltip="Go to Home page"
                 >
                     <mat-icon>arrow_back</mat-icon>
-                    <span class="ml-2" style="font-size: 1.2rem"
-                    >Discharged Patients</span>
+                    <span class="ml-2" >
+                      List Of Discharged Patients
+                    </span>
                 </button>
             </mat-toolbar>
             <div *ngIf="!params?.settingCurrentLocationStatus">
